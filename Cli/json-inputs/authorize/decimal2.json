@@ -1,0 +1,1204 @@
+{
+    "request": {
+        "principal": {
+            "Known": {
+                "euid": {
+                    "ty": {
+                        "Specified": "User"
+                    },
+                    "eid": "alice"
+                },
+                "loc": null
+            }
+        },
+        "action": {
+            "Known": {
+                "euid": {
+                    "ty": {
+                        "Specified": "Action"
+                    },
+                    "eid": "view"
+                },
+                "loc": null
+            }
+        },
+        "resource": {
+            "Known": {
+                "euid": {
+                    "ty": {
+                        "Specified": "Photo"
+                    },
+                    "eid": "VacationPhoto94.jpg"
+                },
+                "loc": null
+            }
+        },
+        "context": {
+            "expr_kind": {
+                "Record": {
+                    "authenticated": {
+                        "expr_kind": {
+                            "Lit": {
+                                "Bool": false
+                            }
+                        },
+                        "source_loc": null,
+                        "data": null
+                    },
+                    "confidence_score": {
+                        "expr_kind": {
+                            "ExtensionFunctionApp": {
+                                "fn_name": "decimal",
+                                "args": [
+                                    {
+                                        "expr_kind": {
+                                            "Lit": {
+                                                "String": "0.455"
+                                            }
+                                        },
+                                        "source_loc": null,
+                                        "data": null
+                                    }
+                                ]
+                            }
+                        },
+                        "source_loc": null,
+                        "data": null
+                    },
+                    "source_ip": {
+                        "expr_kind": {
+                            "ExtensionFunctionApp": {
+                                "fn_name": "ip",
+                                "args": [
+                                    {
+                                        "expr_kind": {
+                                            "Lit": {
+                                                "String": "123.123.123.123"
+                                            }
+                                        },
+                                        "source_loc": null,
+                                        "data": null
+                                    }
+                                ]
+                            }
+                        },
+                        "source_loc": null,
+                        "data": null
+                    }
+                }
+            },
+            "source_loc": null,
+            "data": null
+        }
+    },
+    "policies": {
+        "templates": {
+            "policy0": {
+                "id": "policy0",
+                "annotations": {},
+                "effect": "permit",
+                "principal_constraint": {
+                    "constraint": "Any"
+                },
+                "action_constraint": {
+                    "Eq": {
+                        "ty": {
+                            "Specified": "Action"
+                        },
+                        "eid": "view"
+                    }
+                },
+                "resource_constraint": {
+                    "constraint": {
+                        "Eq": {
+                            "EUID": {
+                                "ty": {
+                                    "Specified": "Photo"
+                                },
+                                "eid": "VacationPhoto94.jpg"
+                            }
+                        }
+                    }
+                },
+                "non_head_constraints": {
+                    "expr_kind": {
+                        "And": {
+                            "left": {
+                                "expr_kind": {
+                                    "ExtensionFunctionApp": {
+                                        "fn_name": "greaterThanOrEqual",
+                                        "args": [
+                                            {
+                                                "expr_kind": {
+                                                    "GetAttr": {
+                                                        "expr": {
+                                                            "expr_kind": {
+                                                                "Var": "context"
+                                                            },
+                                                            "source_loc": {
+                                                                "span": {
+                                                                    "offset": 104,
+                                                                    "length": 7
+                                                                },
+                                                                "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                                                            },
+                                                            "data": null
+                                                        },
+                                                        "attr": "confidence_score"
+                                                    }
+                                                },
+                                                "source_loc": {
+                                                    "span": {
+                                                        "offset": 104,
+                                                        "length": 59
+                                                    },
+                                                    "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                                                },
+                                                "data": null
+                                            },
+                                            {
+                                                "expr_kind": {
+                                                    "ExtensionFunctionApp": {
+                                                        "fn_name": "decimal",
+                                                        "args": [
+                                                            {
+                                                                "expr_kind": {
+                                                                    "Lit": {
+                                                                        "String": "0.4"
+                                                                    }
+                                                                },
+                                                                "source_loc": {
+                                                                    "span": {
+                                                                        "offset": 156,
+                                                                        "length": 5
+                                                                    },
+                                                                    "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                                                                },
+                                                                "data": null
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "source_loc": {
+                                                    "span": {
+                                                        "offset": 148,
+                                                        "length": 14
+                                                    },
+                                                    "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                                                },
+                                                "data": null
+                                            }
+                                        ]
+                                    }
+                                },
+                                "source_loc": {
+                                    "span": {
+                                        "offset": 104,
+                                        "length": 59
+                                    },
+                                    "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                                },
+                                "data": null
+                            },
+                            "right": {
+                                "expr_kind": {
+                                    "ExtensionFunctionApp": {
+                                        "fn_name": "lessThanOrEqual",
+                                        "args": [
+                                            {
+                                                "expr_kind": {
+                                                    "GetAttr": {
+                                                        "expr": {
+                                                            "expr_kind": {
+                                                                "Var": "context"
+                                                            },
+                                                            "source_loc": {
+                                                                "span": {
+                                                                    "offset": 169,
+                                                                    "length": 7
+                                                                },
+                                                                "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                                                            },
+                                                            "data": null
+                                                        },
+                                                        "attr": "confidence_score"
+                                                    }
+                                                },
+                                                "source_loc": {
+                                                    "span": {
+                                                        "offset": 169,
+                                                        "length": 56
+                                                    },
+                                                    "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                                                },
+                                                "data": null
+                                            },
+                                            {
+                                                "expr_kind": {
+                                                    "ExtensionFunctionApp": {
+                                                        "fn_name": "decimal",
+                                                        "args": [
+                                                            {
+                                                                "expr_kind": {
+                                                                    "Lit": {
+                                                                        "String": "0.5"
+                                                                    }
+                                                                },
+                                                                "source_loc": {
+                                                                    "span": {
+                                                                        "offset": 218,
+                                                                        "length": 5
+                                                                    },
+                                                                    "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                                                                },
+                                                                "data": null
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "source_loc": {
+                                                    "span": {
+                                                        "offset": 210,
+                                                        "length": 14
+                                                    },
+                                                    "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                                                },
+                                                "data": null
+                                            }
+                                        ]
+                                    }
+                                },
+                                "source_loc": {
+                                    "span": {
+                                        "offset": 169,
+                                        "length": 56
+                                    },
+                                    "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                                },
+                                "data": null
+                            }
+                        }
+                    },
+                    "source_loc": {
+                        "span": {
+                            "offset": 104,
+                            "length": 121
+                        },
+                        "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                    },
+                    "data": null
+                }
+            }
+        },
+        "links": {
+            "policy0": {
+                "template_id": "policy0",
+                "link_id": null,
+                "values": {}
+            }
+        }
+    },
+    "entities": {
+        "entities": [
+            [
+                {
+                    "ty": {
+                        "Specified": "Action"
+                    },
+                    "eid": "listPhotos"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "Action"
+                        },
+                        "eid": "listPhotos"
+                    },
+                    "attrs": {},
+                    "ancestors": []
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Action"
+                    },
+                    "eid": "edit"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "Action"
+                        },
+                        "eid": "edit"
+                    },
+                    "attrs": {},
+                    "ancestors": []
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "User"
+                    },
+                    "eid": "ahmad"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "User"
+                        },
+                        "eid": "ahmad"
+                    },
+                    "attrs": {
+                        "jobLevel": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "Long": 4
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "department": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "String": "HardwareEngineering"
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        }
+                    },
+                    "ancestors": []
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Photo"
+                    },
+                    "eid": "vacation.jpg"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "Photo"
+                        },
+                        "eid": "vacation.jpg"
+                    },
+                    "attrs": {
+                        "account": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "EntityUID": {
+                                        "ty": {
+                                            "Specified": "Account"
+                                        },
+                                        "eid": "alice"
+                                    }
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "private": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "Bool": false
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "admins": {
+                            "expr_kind": {
+                                "Set": []
+                            },
+                            "source_loc": null,
+                            "data": null
+                        }
+                    },
+                    "ancestors": [
+                        {
+                            "ty": {
+                                "Specified": "Album"
+                            },
+                            "eid": "alice_vacation"
+                        },
+                        {
+                            "ty": {
+                                "Specified": "AccountGroup"
+                            },
+                            "eid": "GeronimoTeam"
+                        },
+                        {
+                            "ty": {
+                                "Specified": "Account"
+                            },
+                            "eid": "alice"
+                        }
+                    ]
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Photo"
+                    },
+                    "eid": "alice_w2.jpg"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "Photo"
+                        },
+                        "eid": "alice_w2.jpg"
+                    },
+                    "attrs": {
+                        "admins": {
+                            "expr_kind": {
+                                "Set": []
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "private": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "Bool": true
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "account": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "EntityUID": {
+                                        "ty": {
+                                            "Specified": "Account"
+                                        },
+                                        "eid": "alice"
+                                    }
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        }
+                    },
+                    "ancestors": [
+                        {
+                            "ty": {
+                                "Specified": "Account"
+                            },
+                            "eid": "alice"
+                        },
+                        {
+                            "ty": {
+                                "Specified": "AccountGroup"
+                            },
+                            "eid": "GeronimoTeam"
+                        }
+                    ]
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "UserGroup"
+                    },
+                    "eid": "AVTeam"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "UserGroup"
+                        },
+                        "eid": "AVTeam"
+                    },
+                    "attrs": {},
+                    "ancestors": []
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "UserGroup"
+                    },
+                    "eid": "alice_friends"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "UserGroup"
+                        },
+                        "eid": "alice_friends"
+                    },
+                    "attrs": {},
+                    "ancestors": []
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Album"
+                    },
+                    "eid": "alice_vacation"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "Album"
+                        },
+                        "eid": "alice_vacation"
+                    },
+                    "attrs": {
+                        "private": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "Bool": false
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "account": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "EntityUID": {
+                                        "ty": {
+                                            "Specified": "Account"
+                                        },
+                                        "eid": "alice"
+                                    }
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "admins": {
+                            "expr_kind": {
+                                "Set": []
+                            },
+                            "source_loc": null,
+                            "data": null
+                        }
+                    },
+                    "ancestors": [
+                        {
+                            "ty": {
+                                "Specified": "Account"
+                            },
+                            "eid": "alice"
+                        },
+                        {
+                            "ty": {
+                                "Specified": "AccountGroup"
+                            },
+                            "eid": "GeronimoTeam"
+                        }
+                    ]
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Action"
+                    },
+                    "eid": "view"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "Action"
+                        },
+                        "eid": "view"
+                    },
+                    "attrs": {},
+                    "ancestors": []
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Photo"
+                    },
+                    "eid": "sales_projections.jpg"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "Photo"
+                        },
+                        "eid": "sales_projections.jpg"
+                    },
+                    "attrs": {
+                        "admins": {
+                            "expr_kind": {
+                                "Set": [
+                                    {
+                                        "expr_kind": {
+                                            "Lit": {
+                                                "EntityUID": {
+                                                    "ty": {
+                                                        "Specified": "User"
+                                                    },
+                                                    "eid": "giuseppe"
+                                                }
+                                            }
+                                        },
+                                        "source_loc": null,
+                                        "data": null
+                                    }
+                                ]
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "account": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "EntityUID": {
+                                        "ty": {
+                                            "Specified": "Account"
+                                        },
+                                        "eid": "stacey"
+                                    }
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "private": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "Bool": false
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        }
+                    },
+                    "ancestors": [
+                        {
+                            "ty": {
+                                "Specified": "Account"
+                            },
+                            "eid": "stacey"
+                        }
+                    ]
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Photo"
+                    },
+                    "eid": "prototype_v0.jpg"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "Photo"
+                        },
+                        "eid": "prototype_v0.jpg"
+                    },
+                    "attrs": {
+                        "private": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "Bool": false
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "admins": {
+                            "expr_kind": {
+                                "Set": []
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "account": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "EntityUID": {
+                                        "ty": {
+                                            "Specified": "Account"
+                                        },
+                                        "eid": "ahmad"
+                                    }
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        }
+                    },
+                    "ancestors": [
+                        {
+                            "ty": {
+                                "Specified": "Album"
+                            },
+                            "eid": "device_prototypes"
+                        }
+                    ]
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Action"
+                    },
+                    "eid": "comment"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "Action"
+                        },
+                        "eid": "comment"
+                    },
+                    "attrs": {},
+                    "ancestors": []
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Action"
+                    },
+                    "eid": "addPhoto"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "Action"
+                        },
+                        "eid": "addPhoto"
+                    },
+                    "attrs": {},
+                    "ancestors": []
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Account"
+                    },
+                    "eid": "alice"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "Account"
+                        },
+                        "eid": "alice"
+                    },
+                    "attrs": {
+                        "admins": {
+                            "expr_kind": {
+                                "Set": []
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "owner": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "EntityUID": {
+                                        "ty": {
+                                            "Specified": "User"
+                                        },
+                                        "eid": "alice"
+                                    }
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "private": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "Bool": false
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        }
+                    },
+                    "ancestors": [
+                        {
+                            "ty": {
+                                "Specified": "AccountGroup"
+                            },
+                            "eid": "GeronimoTeam"
+                        }
+                    ]
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Account"
+                    },
+                    "eid": "ahmad"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "Account"
+                        },
+                        "eid": "ahmad"
+                    },
+                    "attrs": {
+                        "admins": {
+                            "expr_kind": {
+                                "Set": []
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "private": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "Bool": false
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "owner": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "EntityUID": {
+                                        "ty": {
+                                            "Specified": "User"
+                                        },
+                                        "eid": "ahmad"
+                                    }
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        }
+                    },
+                    "ancestors": [
+                        {
+                            "ty": {
+                                "Specified": "AccountGroup"
+                            },
+                            "eid": "GeronimoTeam"
+                        }
+                    ]
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "User"
+                    },
+                    "eid": "stacey"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "User"
+                        },
+                        "eid": "stacey"
+                    },
+                    "attrs": {
+                        "department": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "String": "Sales"
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "jobLevel": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "Long": 6
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        }
+                    },
+                    "ancestors": [
+                        {
+                            "ty": {
+                                "Specified": "UserGroup"
+                            },
+                            "eid": "alice_friends"
+                        }
+                    ]
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "User"
+                    },
+                    "eid": "giuseppe"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "User"
+                        },
+                        "eid": "giuseppe"
+                    },
+                    "attrs": {
+                        "jobLevel": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "Long": 7
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "department": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "String": "CustomerSupport"
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        }
+                    },
+                    "ancestors": [
+                        {
+                            "ty": {
+                                "Specified": "UserGroup"
+                            },
+                            "eid": "AVTeam"
+                        }
+                    ]
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Account"
+                    },
+                    "eid": "stacey"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "Account"
+                        },
+                        "eid": "stacey"
+                    },
+                    "attrs": {
+                        "private": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "Bool": false
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "owner": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "EntityUID": {
+                                        "ty": {
+                                            "Specified": "User"
+                                        },
+                                        "eid": "stacey"
+                                    }
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "admins": {
+                            "expr_kind": {
+                                "Set": []
+                            },
+                            "source_loc": null,
+                            "data": null
+                        }
+                    },
+                    "ancestors": []
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Action"
+                    },
+                    "eid": "listAlbums"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "Action"
+                        },
+                        "eid": "listAlbums"
+                    },
+                    "attrs": {},
+                    "ancestors": []
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Action"
+                    },
+                    "eid": "delete"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "Action"
+                        },
+                        "eid": "delete"
+                    },
+                    "attrs": {},
+                    "ancestors": []
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Album"
+                    },
+                    "eid": "device_prototypes"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "Album"
+                        },
+                        "eid": "device_prototypes"
+                    },
+                    "attrs": {
+                        "admins": {
+                            "expr_kind": {
+                                "Set": []
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "private": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "Bool": false
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "account": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "EntityUID": {
+                                        "ty": {
+                                            "Specified": "Account"
+                                        },
+                                        "eid": "alice"
+                                    }
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        }
+                    },
+                    "ancestors": []
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "User"
+                    },
+                    "eid": "alice"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "User"
+                        },
+                        "eid": "alice"
+                    },
+                    "attrs": {
+                        "department": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "String": "HardwareEngineering"
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        },
+                        "jobLevel": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "Long": 5
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        }
+                    },
+                    "ancestors": [
+                        {
+                            "ty": {
+                                "Specified": "UserGroup"
+                            },
+                            "eid": "AVTeam"
+                        },
+                        {
+                            "ty": {
+                                "Specified": "UserGroup"
+                            },
+                            "eid": "alice_friends"
+                        }
+                    ]
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "AccountGroup"
+                    },
+                    "eid": "GeronimoTeam"
+                },
+                {
+                    "uid": {
+                        "ty": {
+                            "Specified": "AccountGroup"
+                        },
+                        "eid": "GeronimoTeam"
+                    },
+                    "attrs": {
+                        "owner": {
+                            "expr_kind": {
+                                "Lit": {
+                                    "EntityUID": {
+                                        "ty": {
+                                            "Specified": "User"
+                                        },
+                                        "eid": "alice"
+                                    }
+                                }
+                            },
+                            "source_loc": null,
+                            "data": null
+                        }
+                    },
+                    "ancestors": []
+                }
+            ]
+        ]
+    }
+}

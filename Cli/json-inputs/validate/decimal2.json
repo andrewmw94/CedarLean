@@ -1,0 +1,856 @@
+{
+    "schema": {
+        "entityTypes": [
+            [
+                "User",
+                {
+                    "name": "User",
+                    "descendants": [],
+                    "attributes": {
+                        "attrs": {
+                            "department": {
+                                "attrType": {
+                                    "Primitive": {
+                                        "primitiveType": "String"
+                                    }
+                                },
+                                "isRequired": true
+                            },
+                            "jobLevel": {
+                                "attrType": {
+                                    "Primitive": {
+                                        "primitiveType": "Long"
+                                    }
+                                },
+                                "isRequired": true
+                            }
+                        }
+                    },
+                    "open_attributes": "ClosedAttributes"
+                }
+            ],
+            [
+                "UserGroup",
+                {
+                    "name": "UserGroup",
+                    "descendants": [
+                        "User"
+                    ],
+                    "attributes": {
+                        "attrs": {}
+                    },
+                    "open_attributes": "ClosedAttributes"
+                }
+            ],
+            [
+                "Administrator",
+                {
+                    "name": "Administrator",
+                    "descendants": [],
+                    "attributes": {
+                        "attrs": {}
+                    },
+                    "open_attributes": "ClosedAttributes"
+                }
+            ],
+            [
+                "Album",
+                {
+                    "name": "Album",
+                    "descendants": [
+                        "Photo",
+                        "Album"
+                    ],
+                    "attributes": {
+                        "attrs": {
+                            "account": {
+                                "attrType": {
+                                    "EntityOrRecord": {
+                                        "Entity": {
+                                            "lub_elements": [
+                                                "Account"
+                                            ]
+                                        }
+                                    }
+                                },
+                                "isRequired": true
+                            },
+                            "admins": {
+                                "attrType": {
+                                    "Set": {
+                                        "elementType": {
+                                            "EntityOrRecord": {
+                                                "Entity": {
+                                                    "lub_elements": [
+                                                        "User"
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "isRequired": true
+                            },
+                            "private": {
+                                "attrType": {
+                                    "Primitive": {
+                                        "primitiveType": "Bool"
+                                    }
+                                },
+                                "isRequired": true
+                            }
+                        }
+                    },
+                    "open_attributes": "ClosedAttributes"
+                }
+            ],
+            [
+                "Account",
+                {
+                    "name": "Account",
+                    "descendants": [
+                        "Photo",
+                        "Album"
+                    ],
+                    "attributes": {
+                        "attrs": {
+                            "admins": {
+                                "attrType": {
+                                    "Set": {
+                                        "elementType": {
+                                            "EntityOrRecord": {
+                                                "Entity": {
+                                                    "lub_elements": [
+                                                        "User"
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "isRequired": true
+                            },
+                            "owner": {
+                                "attrType": {
+                                    "EntityOrRecord": {
+                                        "Entity": {
+                                            "lub_elements": [
+                                                "User"
+                                            ]
+                                        }
+                                    }
+                                },
+                                "isRequired": true
+                            },
+                            "private": {
+                                "attrType": {
+                                    "Primitive": {
+                                        "primitiveType": "Bool"
+                                    }
+                                },
+                                "isRequired": true
+                            }
+                        }
+                    },
+                    "open_attributes": "ClosedAttributes"
+                }
+            ],
+            [
+                "AccountGroup",
+                {
+                    "name": "AccountGroup",
+                    "descendants": [
+                        "Photo",
+                        "Album",
+                        "Account"
+                    ],
+                    "attributes": {
+                        "attrs": {
+                            "owner": {
+                                "attrType": {
+                                    "EntityOrRecord": {
+                                        "Entity": {
+                                            "lub_elements": [
+                                                "User"
+                                            ]
+                                        }
+                                    }
+                                },
+                                "isRequired": true
+                            }
+                        }
+                    },
+                    "open_attributes": "ClosedAttributes"
+                }
+            ],
+            [
+                "Photo",
+                {
+                    "name": "Photo",
+                    "descendants": [],
+                    "attributes": {
+                        "attrs": {
+                            "account": {
+                                "attrType": {
+                                    "EntityOrRecord": {
+                                        "Entity": {
+                                            "lub_elements": [
+                                                "Account"
+                                            ]
+                                        }
+                                    }
+                                },
+                                "isRequired": true
+                            },
+                            "admins": {
+                                "attrType": {
+                                    "Set": {
+                                        "elementType": {
+                                            "EntityOrRecord": {
+                                                "Entity": {
+                                                    "lub_elements": [
+                                                        "User"
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "isRequired": true
+                            },
+                            "private": {
+                                "attrType": {
+                                    "Primitive": {
+                                        "primitiveType": "Bool"
+                                    }
+                                },
+                                "isRequired": true
+                            }
+                        }
+                    },
+                    "open_attributes": "ClosedAttributes"
+                }
+            ]
+        ],
+        "actionIds": [
+            [
+                {
+                    "ty": {
+                        "Specified": "Action"
+                    },
+                    "eid": "comment"
+                },
+                {
+                    "name": {
+                        "ty": {
+                            "Specified": "Action"
+                        },
+                        "eid": "comment"
+                    },
+                    "appliesTo": {
+                        "principalApplySpec": [
+                            {
+                                "Specified": "User"
+                            }
+                        ],
+                        "resourceApplySpec": [
+                            {
+                                "Specified": "Photo"
+                            }
+                        ]
+                    },
+                    "descendants": [],
+                    "context": {
+                        "EntityOrRecord": {
+                            "Record": {
+                                "attrs": {
+                                    "attrs": {
+                                        "authenticated": {
+                                            "attrType": {
+                                                "Primitive": {
+                                                    "primitiveType": "Bool"
+                                                }
+                                            },
+                                            "isRequired": true
+                                        }
+                                    }
+                                },
+                                "open_attributes": "ClosedAttributes"
+                            }
+                        }
+                    },
+                    "attribute_types": {
+                        "attrs": {}
+                    },
+                    "attributes": {}
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Action"
+                    },
+                    "eid": "listAlbums"
+                },
+                {
+                    "name": {
+                        "ty": {
+                            "Specified": "Action"
+                        },
+                        "eid": "listAlbums"
+                    },
+                    "appliesTo": {
+                        "principalApplySpec": [
+                            {
+                                "Specified": "User"
+                            }
+                        ],
+                        "resourceApplySpec": [
+                            {
+                                "Specified": "Account"
+                            }
+                        ]
+                    },
+                    "descendants": [],
+                    "context": {
+                        "EntityOrRecord": {
+                            "Record": {
+                                "attrs": {
+                                    "attrs": {
+                                        "authenticated": {
+                                            "attrType": {
+                                                "Primitive": {
+                                                    "primitiveType": "Bool"
+                                                }
+                                            },
+                                            "isRequired": true
+                                        }
+                                    }
+                                },
+                                "open_attributes": "ClosedAttributes"
+                            }
+                        }
+                    },
+                    "attribute_types": {
+                        "attrs": {}
+                    },
+                    "attributes": {}
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Action"
+                    },
+                    "eid": "addPhoto"
+                },
+                {
+                    "name": {
+                        "ty": {
+                            "Specified": "Action"
+                        },
+                        "eid": "addPhoto"
+                    },
+                    "appliesTo": {
+                        "principalApplySpec": [
+                            {
+                                "Specified": "User"
+                            }
+                        ],
+                        "resourceApplySpec": [
+                            {
+                                "Specified": "Album"
+                            }
+                        ]
+                    },
+                    "descendants": [],
+                    "context": {
+                        "EntityOrRecord": {
+                            "Record": {
+                                "attrs": {
+                                    "attrs": {
+                                        "authenticated": {
+                                            "attrType": {
+                                                "Primitive": {
+                                                    "primitiveType": "Bool"
+                                                }
+                                            },
+                                            "isRequired": true
+                                        },
+                                        "photo": {
+                                            "attrType": {
+                                                "EntityOrRecord": {
+                                                    "Record": {
+                                                        "attrs": {
+                                                            "attrs": {
+                                                                "filesize_mb": {
+                                                                    "attrType": {
+                                                                        "Primitive": {
+                                                                            "primitiveType": "Long"
+                                                                        }
+                                                                    },
+                                                                    "isRequired": true
+                                                                },
+                                                                "filetype": {
+                                                                    "attrType": {
+                                                                        "Primitive": {
+                                                                            "primitiveType": "String"
+                                                                        }
+                                                                    },
+                                                                    "isRequired": true
+                                                                }
+                                                            }
+                                                        },
+                                                        "open_attributes": "ClosedAttributes"
+                                                    }
+                                                }
+                                            },
+                                            "isRequired": true
+                                        }
+                                    }
+                                },
+                                "open_attributes": "ClosedAttributes"
+                            }
+                        }
+                    },
+                    "attribute_types": {
+                        "attrs": {}
+                    },
+                    "attributes": {}
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Action"
+                    },
+                    "eid": "listPhotos"
+                },
+                {
+                    "name": {
+                        "ty": {
+                            "Specified": "Action"
+                        },
+                        "eid": "listPhotos"
+                    },
+                    "appliesTo": {
+                        "principalApplySpec": [
+                            {
+                                "Specified": "User"
+                            }
+                        ],
+                        "resourceApplySpec": [
+                            {
+                                "Specified": "Album"
+                            }
+                        ]
+                    },
+                    "descendants": [],
+                    "context": {
+                        "EntityOrRecord": {
+                            "Record": {
+                                "attrs": {
+                                    "attrs": {
+                                        "authenticated": {
+                                            "attrType": {
+                                                "Primitive": {
+                                                    "primitiveType": "Bool"
+                                                }
+                                            },
+                                            "isRequired": true
+                                        }
+                                    }
+                                },
+                                "open_attributes": "ClosedAttributes"
+                            }
+                        }
+                    },
+                    "attribute_types": {
+                        "attrs": {}
+                    },
+                    "attributes": {}
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Action"
+                    },
+                    "eid": "delete"
+                },
+                {
+                    "name": {
+                        "ty": {
+                            "Specified": "Action"
+                        },
+                        "eid": "delete"
+                    },
+                    "appliesTo": {
+                        "principalApplySpec": [
+                            {
+                                "Specified": "User"
+                            }
+                        ],
+                        "resourceApplySpec": [
+                            {
+                                "Specified": "Photo"
+                            }
+                        ]
+                    },
+                    "descendants": [],
+                    "context": {
+                        "EntityOrRecord": {
+                            "Record": {
+                                "attrs": {
+                                    "attrs": {
+                                        "authenticated": {
+                                            "attrType": {
+                                                "Primitive": {
+                                                    "primitiveType": "Bool"
+                                                }
+                                            },
+                                            "isRequired": true
+                                        }
+                                    }
+                                },
+                                "open_attributes": "ClosedAttributes"
+                            }
+                        }
+                    },
+                    "attribute_types": {
+                        "attrs": {}
+                    },
+                    "attributes": {}
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Action"
+                    },
+                    "eid": "view"
+                },
+                {
+                    "name": {
+                        "ty": {
+                            "Specified": "Action"
+                        },
+                        "eid": "view"
+                    },
+                    "appliesTo": {
+                        "principalApplySpec": [
+                            {
+                                "Specified": "User"
+                            }
+                        ],
+                        "resourceApplySpec": [
+                            {
+                                "Specified": "Photo"
+                            }
+                        ]
+                    },
+                    "descendants": [],
+                    "context": {
+                        "EntityOrRecord": {
+                            "Record": {
+                                "attrs": {
+                                    "attrs": {
+                                        "authenticated": {
+                                            "attrType": {
+                                                "Primitive": {
+                                                    "primitiveType": "Bool"
+                                                }
+                                            },
+                                            "isRequired": true
+                                        },
+                                        "confidence_score": {
+                                            "attrType": {
+                                                "ExtensionType": {
+                                                    "name": "decimal"
+                                                }
+                                            },
+                                            "isRequired": true
+                                        },
+                                        "source_ip": {
+                                            "attrType": {
+                                                "ExtensionType": {
+                                                    "name": "ipaddr"
+                                                }
+                                            },
+                                            "isRequired": true
+                                        }
+                                    }
+                                },
+                                "open_attributes": "ClosedAttributes"
+                            }
+                        }
+                    },
+                    "attribute_types": {
+                        "attrs": {}
+                    },
+                    "attributes": {}
+                }
+            ],
+            [
+                {
+                    "ty": {
+                        "Specified": "Action"
+                    },
+                    "eid": "edit"
+                },
+                {
+                    "name": {
+                        "ty": {
+                            "Specified": "Action"
+                        },
+                        "eid": "edit"
+                    },
+                    "appliesTo": {
+                        "principalApplySpec": [
+                            {
+                                "Specified": "User"
+                            }
+                        ],
+                        "resourceApplySpec": [
+                            {
+                                "Specified": "Photo"
+                            }
+                        ]
+                    },
+                    "descendants": [],
+                    "context": {
+                        "EntityOrRecord": {
+                            "Record": {
+                                "attrs": {
+                                    "attrs": {
+                                        "authenticated": {
+                                            "attrType": {
+                                                "Primitive": {
+                                                    "primitiveType": "Bool"
+                                                }
+                                            },
+                                            "isRequired": true
+                                        }
+                                    }
+                                },
+                                "open_attributes": "ClosedAttributes"
+                            }
+                        }
+                    },
+                    "attribute_types": {
+                        "attrs": {}
+                    },
+                    "attributes": {}
+                }
+            ]
+        ]
+    },
+    "policies": {
+        "templates": {
+            "policy0": {
+                "id": "policy0",
+                "annotations": {},
+                "effect": "permit",
+                "principal_constraint": {
+                    "constraint": "Any"
+                },
+                "action_constraint": {
+                    "Eq": {
+                        "ty": {
+                            "Specified": "Action"
+                        },
+                        "eid": "view"
+                    }
+                },
+                "resource_constraint": {
+                    "constraint": {
+                        "Eq": {
+                            "EUID": {
+                                "ty": {
+                                    "Specified": "Photo"
+                                },
+                                "eid": "VacationPhoto94.jpg"
+                            }
+                        }
+                    }
+                },
+                "non_head_constraints": {
+                    "expr_kind": {
+                        "And": {
+                            "left": {
+                                "expr_kind": {
+                                    "ExtensionFunctionApp": {
+                                        "fn_name": "greaterThanOrEqual",
+                                        "args": [
+                                            {
+                                                "expr_kind": {
+                                                    "GetAttr": {
+                                                        "expr": {
+                                                            "expr_kind": {
+                                                                "Var": "context"
+                                                            },
+                                                            "source_loc": {
+                                                                "span": {
+                                                                    "offset": 104,
+                                                                    "length": 7
+                                                                },
+                                                                "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                                                            },
+                                                            "data": null
+                                                        },
+                                                        "attr": "confidence_score"
+                                                    }
+                                                },
+                                                "source_loc": {
+                                                    "span": {
+                                                        "offset": 104,
+                                                        "length": 59
+                                                    },
+                                                    "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                                                },
+                                                "data": null
+                                            },
+                                            {
+                                                "expr_kind": {
+                                                    "ExtensionFunctionApp": {
+                                                        "fn_name": "decimal",
+                                                        "args": [
+                                                            {
+                                                                "expr_kind": {
+                                                                    "Lit": {
+                                                                        "String": "0.4"
+                                                                    }
+                                                                },
+                                                                "source_loc": {
+                                                                    "span": {
+                                                                        "offset": 156,
+                                                                        "length": 5
+                                                                    },
+                                                                    "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                                                                },
+                                                                "data": null
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "source_loc": {
+                                                    "span": {
+                                                        "offset": 148,
+                                                        "length": 14
+                                                    },
+                                                    "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                                                },
+                                                "data": null
+                                            }
+                                        ]
+                                    }
+                                },
+                                "source_loc": {
+                                    "span": {
+                                        "offset": 104,
+                                        "length": 59
+                                    },
+                                    "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                                },
+                                "data": null
+                            },
+                            "right": {
+                                "expr_kind": {
+                                    "ExtensionFunctionApp": {
+                                        "fn_name": "lessThanOrEqual",
+                                        "args": [
+                                            {
+                                                "expr_kind": {
+                                                    "GetAttr": {
+                                                        "expr": {
+                                                            "expr_kind": {
+                                                                "Var": "context"
+                                                            },
+                                                            "source_loc": {
+                                                                "span": {
+                                                                    "offset": 169,
+                                                                    "length": 7
+                                                                },
+                                                                "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                                                            },
+                                                            "data": null
+                                                        },
+                                                        "attr": "confidence_score"
+                                                    }
+                                                },
+                                                "source_loc": {
+                                                    "span": {
+                                                        "offset": 169,
+                                                        "length": 56
+                                                    },
+                                                    "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                                                },
+                                                "data": null
+                                            },
+                                            {
+                                                "expr_kind": {
+                                                    "ExtensionFunctionApp": {
+                                                        "fn_name": "decimal",
+                                                        "args": [
+                                                            {
+                                                                "expr_kind": {
+                                                                    "Lit": {
+                                                                        "String": "0.5"
+                                                                    }
+                                                                },
+                                                                "source_loc": {
+                                                                    "span": {
+                                                                        "offset": 218,
+                                                                        "length": 5
+                                                                    },
+                                                                    "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                                                                },
+                                                                "data": null
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "source_loc": {
+                                                    "span": {
+                                                        "offset": 210,
+                                                        "length": 14
+                                                    },
+                                                    "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                                                },
+                                                "data": null
+                                            }
+                                        ]
+                                    }
+                                },
+                                "source_loc": {
+                                    "span": {
+                                        "offset": 169,
+                                        "length": 56
+                                    },
+                                    "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                                },
+                                "data": null
+                            }
+                        }
+                    },
+                    "source_loc": {
+                        "span": {
+                            "offset": 104,
+                            "length": 121
+                        },
+                        "src": "permit (\n  principal,\n  action == Action::\"view\",\n  resource == Photo::\"VacationPhoto94.jpg\"\n)\nwhen\n{\n  context.confidence_score.greaterThanOrEqual(decimal(\"0.4\")) &&\n  context.confidence_score.lessThanOrEqual(decimal(\"0.5\"))\n};\n"
+                    },
+                    "data": null
+                }
+            }
+        },
+        "links": {
+            "policy0": {
+                "template_id": "policy0",
+                "link_id": null,
+                "values": {}
+            }
+        }
+    },
+    "mode": "Strict"
+}
