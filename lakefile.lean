@@ -22,13 +22,13 @@ require std from git
 
 package Cedar
 
-@[default_target]
 lean_lib Cedar where
   defaultFacets := #[LeanLib.staticFacet]
 
 lean_lib DiffTest where
   defaultFacets := #[LeanLib.staticFacet]
 
+@[default_target]
 lean_lib UnitTest where
   defaultFacets := #[LeanLib.staticFacet]
 
