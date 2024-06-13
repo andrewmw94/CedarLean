@@ -1,5 +1,5 @@
 /-
- Copyright 2022-2023 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ Copyright Cedar Contributors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
 -/
 
 import Cedar.Spec
-import Std
 
 /-!
 This file contains proofs that the less-than (`<`) relation on Cedar values is strict.
@@ -35,71 +34,97 @@ namespace Decide
 @[simp] theorem not_decide_eq_true {h : Decidable p} : ((!decide p) = true) = ¬ p := by cases h <;> simp [decide, *]
 end Decide
 
+----- `<` is strict on `IPNetPrefix` -----
+
+instance IPNetPrefix.strictLT {w} : StrictLT (Ext.IPAddr.IPNetPrefix w) where
+  asymmetric a b  := by
+    simp only [LT.lt]
+    unfold Ext.IPAddr.IPNetPrefix.lt Ext.IPAddr.IPNetPrefix.toNat Ext.IPAddr.ADDR_SIZE
+    cases a <;> cases b <;>
+    simp only [Nat.lt_irrefl, decide_False, not_false_eq_true,
+      false_implies, decide_eq_true_eq, Nat.not_lt]
+    all_goals { omega }
+  transitive a b c := by
+    simp only [LT.lt]
+    unfold Ext.IPAddr.IPNetPrefix.lt Ext.IPAddr.IPNetPrefix.toNat Ext.IPAddr.ADDR_SIZE
+    cases a <;> cases b <;> cases c <;>
+    simp only [Nat.lt_irrefl, decide_False, imp_self,
+      decide_eq_true_eq, false_implies, implies_true]
+    all_goals { omega }
+  connected  a b   := by
+    simp only [LT.lt]
+    unfold Ext.IPAddr.IPNetPrefix.lt Ext.IPAddr.IPNetPrefix.toNat Ext.IPAddr.ADDR_SIZE
+    cases a <;> cases b <;>
+    simp only [ne_eq, not_true_eq_false, Nat.lt_irrefl, decide_eq_true_eq,
+      decide_False, or_self, imp_self, not_false_eq_true, forall_const, Option.some.injEq]
+    · apply Or.inr ; omega
+    · apply Or.inl ; omega
+    · bv_omega
+
+----- `<` is strict on `CIDR` -----
+
+instance CIDR.strictLT {w} : StrictLT (Ext.IPAddr.CIDR w) where
+  asymmetric a b   := by
+    simp only [LT.lt]
+    simp only [Ext.IPAddr.CIDR.lt, Bool.or_eq_true, decide_eq_true_eq, Bool.and_eq_true]
+    intro h₁
+    by_contra h₂
+    rcases h₁ with h₁ | ⟨h₁, h₃⟩
+    · bv_omega
+    · simp only [h₁, true_and] at h₂
+      rcases h₂ with h₂ | h₂
+      · have _ : ¬ b.addr < b.addr := by bv_omega
+        contradiction
+      · have _ := IPNetPrefix.strictLT.asymmetric _ _ h₃
+        contradiction
+  transitive a b c := by
+    simp only [LT.lt]
+    simp only [Ext.IPAddr.CIDR.lt, Bool.or_eq_true, decide_eq_true_eq, Bool.and_eq_true]
+    intro h₁ h₂
+    rcases h₁ with h₁ | ⟨h₁, h₃⟩ <;>
+    rcases h₂ with h₂ | ⟨h₂, h₄⟩ <;>
+    try bv_omega
+    simp only [h₁, h₂, true_and]
+    apply Or.inr
+    exact IPNetPrefix.strictLT.transitive _ _ _ h₃ h₄
+  connected  a b   := by
+    simp only [LT.lt]
+    simp only [Ext.IPAddr.CIDR.lt, Bool.or_eq_true, decide_eq_true_eq, Bool.and_eq_true]
+    intro h₁
+    have h₂ : a.addr < b.addr ∨ a.addr = b.addr ∨ b.addr < a.addr := by bv_omega
+    rcases h₂ with h₂ | h₂ | h₂ <;>
+    simp only[h₂, true_or, or_true, true_and]
+    have h₃ : a = ⟨a.addr, a.pre⟩ := by simp only
+    have h₄ : b = ⟨b.addr, b.pre⟩ := by simp only
+    rw [h₃, h₄, h₂] at h₁
+    simp only [ne_eq, Ext.IPAddr.CIDR.mk.injEq, true_and] at h₁
+    have h₅ := IPNetPrefix.strictLT.connected _ _ h₁
+    rcases h₅ with h₅ | h₅ <;> simp only [h₅, or_true, true_or]
 
 ----- `<` is strict on `IPNet` -----
 
-theorem IPNet.lt_asymm {a₁ a₂ p₁ p₂ : Nat} :
-  a₁ < a₂ ∨ a₁ = a₂ ∧ p₁ < p₂ → ¬(a₂ < a₁ ∨ a₂ = a₁ ∧ p₂ < p₁)
-:= by omega
-
-theorem IPNet.lt_trans {a₁ a₂ a₃ p₁ p₂ p₃ : Nat}
-  (h₁ : a₁ < a₂ ∨ a₁ = a₂ ∧ p₁ < p₂)
-  (h₂ : a₂ < a₃ ∨ a₂ = a₃ ∧ p₂ < p₃) :
-  a₁ < a₃ ∨ a₁ = a₃ ∧ p₁ < p₃
-:= by omega
-
-theorem IPNet.lt_conn {a₁ a₂ p₁ p₂ : Nat}
-  (h₁ : a₁ = a₂ → ¬p₁ = p₂) :
-  (a₁ < a₂ ∨ a₁ = a₂ ∧ p₁ < p₂) ∨ a₂ < a₁ ∨ a₂ = a₁ ∧ p₂ < p₁
-:= by omega
-
 instance IPNet.strictLT : StrictLT Ext.IPAddr.IPNet where
   asymmetric a b   := by
-    cases a <;> cases b <;> simp [LT.lt, Ext.IPAddr.IPNet.lt]
-    case V4 a₁ p₁ a₂ p₂ =>
-      cases a₁ ; rename_i a₁ ; cases a₁
-      cases a₂ ; rename_i a₂ ; cases a₂
-      cases p₁ ; cases p₂
-      simp only [Fin.mk.injEq]
-      exact IPNet.lt_asymm
-    case V6 a₁ p₁ a₂ p₂ =>
-      cases a₁ ; cases a₂ ; cases p₁ ; cases p₂
-      simp only
-      exact IPNet.lt_asymm
+    simp only [LT.lt]
+    unfold Ext.IPAddr.IPNet.lt
+    cases a <;> cases b <;>
+    simp only [not_false_eq_true, imp_self,
+      decide_eq_true_eq, not_true_eq_false] <;>
+    exact CIDR.strictLT.asymmetric _ _
   transitive a b c := by
-    intro h₁ h₂
-    simp [LT.lt, Ext.IPAddr.IPNet.lt] at h₁ h₂ ; split at h₁ <;> split at h₂ <;>
-    simp [LT.lt, Ext.IPAddr.IPNet.lt] at * <;>
-    rename_i h₃ <;>
-    have ⟨h₃, h₄⟩ := h₃ <;> subst h₃ h₄
-    case h_3 a₁ p₁ a₂ p₂ _ _ a₃ p₃ =>
-      cases a₁ ; rename_i a₁ ; cases a₁
-      cases a₂ ; rename_i a₂ ; cases a₂
-      cases a₃ ; rename_i a₃ ; cases a₃
-      cases p₁ ; cases p₂ ; cases p₃
-      simp only [Fin.mk.injEq] at *
-      exact IPNet.lt_trans h₁ h₂
-    case h_4 a₁ p₁ a₂ p₂ _ _ a₃ p₃ =>
-      cases a₁ ; cases a₂ ; cases a₃ ; cases p₁ ; cases p₂ ; cases p₃
-      simp only at *
-      exact IPNet.lt_trans h₁ h₂
+    simp only [LT.lt]
+    unfold Ext.IPAddr.IPNet.lt
+    cases a <;> cases b <;> cases c <;>
+    simp only [decide_eq_true_eq, imp_self, implies_true,
+      false_implies, forall_const] <;>
+    exact CIDR.strictLT.transitive _ _ _
   connected  a b   := by
-    cases a <;> cases b <;> simp [LT.lt, Ext.IPAddr.IPNet.lt] <;> intro h₁
-    case V4 a₁ p₁ a₂ p₂ =>
-      cases a₁ ; rename_i a₁ ; cases a₁
-      cases a₂ ; rename_i a₂ ; cases a₂
-      cases p₁ ; cases p₂
-      simp at *
-      rename_i a₁ _ a₂ _ p₁ _ p₂ _
-      apply IPNet.lt_conn
-      intro h₂
-      simp [UInt32.toNat] at h₂
-      simp [h₂] at h₁
-      exact h₁
-    case V6 a₁ p₁ a₂ p₂ =>
-      cases a₁ ; cases a₂ ; cases p₁ ; cases p₂
-      simp at *
-      exact IPNet.lt_conn h₁
+    simp only [LT.lt]
+    unfold Ext.IPAddr.IPNet.lt
+    cases a <;> cases b <;>
+    simp only [ne_eq, Ext.IPAddr.IPNet.V4.injEq, Ext.IPAddr.IPNet.V6.injEq,
+      decide_eq_true_eq, not_false_eq_true, or_false, or_true, imp_self] <;>
+    exact CIDR.strictLT.connected _ _
 
 ----- `<` is strict on `Ext` -----
 
@@ -168,24 +193,21 @@ instance Name.strictLT : StrictLT Name where
 theorem EntityUID.lt_asymm {a b : EntityUID} :
   a < b → ¬ b < a
 := by
-  simp [LT.lt, EntityUID.lt]
+  simp only [LT.lt] -- keep this separate so as not to over-simplify
+  simp only [EntityUID.lt, decide_eq_true_eq, not_or, Bool.not_eq_true, not_and]
   intro h₁
   by_contra h₂
+  simp only [not_and, not_imp, Classical.not_not] at h₂
   have h₃ := Name.strictLT.asymmetric a.ty b.ty
-  simp [LT.lt] at h₃
-  rcases h₁ with h₁ | h₁ <;> rcases h₂ with h₂ | h₂
-  case inl.inl =>
-    simp only [h₁, h₂, forall_const] at h₃
-  case inl.inr =>
-    have ⟨h₂, _⟩ := h₂
-    rw [h₂] at h₁ h₃
-    simp [h₁] at h₃
-  case inr.inl =>
-    have h₄ := StrictLT.not_eq b.ty a.ty h₂
-    simp [h₁] at h₄
-  case inr.inr =>
-    have h₄ := String.strictLT.asymmetric a.eid b.eid
-    simp [LT.lt, h₁, h₂] at h₄
+  simp only [Bool.not_eq_true] at h₃
+  rcases h₁ with h₁ | h₁
+  · simp only [h₁, true_implies] at h₃
+    simp only [h₃, not_false_eq_true, true_implies] at h₂
+    rw [h₂.left] at h₁ h₃
+    simp only [h₁, not_true_eq_false] at h₃
+  · simp only [h₁.left, StrictLT.irreflexive b.ty, not_false_eq_true, true_and, true_implies] at h₂
+    have _ := String.strictLT.asymmetric a.eid b.eid h₁.right
+    contradiction
 
 theorem EntityUID.lt_trans {a b c : EntityUID} :
   a < b → b < c → a < c
@@ -193,20 +215,16 @@ theorem EntityUID.lt_trans {a b c : EntityUID} :
   simp [LT.lt, EntityUID.lt]
   intro h₁ h₂
   rcases h₁ with h₁ | h₁ <;> rcases h₂ with h₂ | h₂
-  case inl.inl =>
-    have h₃ := Name.strictLT.transitive a.ty b.ty c.ty h₁ h₂
+  · have h₃ := Name.strictLT.transitive a.ty b.ty c.ty h₁ h₂
     simp only [LT.lt] at h₃
     simp [h₃]
-  case inl.inr =>
-    have ⟨h₂, _⟩ := h₂
+  · have ⟨h₂, _⟩ := h₂
     simp [h₂] at h₁
     simp [h₁]
-  case inr.inl =>
-    have ⟨h₁, _⟩ := h₁
+  · have ⟨h₁, _⟩ := h₁
     simp [←h₁] at h₂
     simp [h₂]
-  case inr.inr =>
-    have ⟨hl₁, hr₁⟩ := h₁
+  · have ⟨hl₁, hr₁⟩ := h₁
     have ⟨hl₂, hr₂⟩ := h₂
     simp [hl₁] at * ; simp [hl₂] at *
     have h₃ := String.strictLT.transitive a.eid b.eid c.eid hr₁ hr₂
@@ -293,34 +311,23 @@ theorem Value.lt_irrefl (v : Value) :
 theorem Values.lt_irrefl (vs : List Value) :
   ¬ Values.lt vs vs
 := by
-  cases vs ; simp [Values.lt] ; rename_i hd tl ; simp [Values.lt]
-  by_contra h₁
-  rcases h₁ with h₁ | h₁
-  case inl =>
-    have h₂ := Value.lt_irrefl hd
-    simp [h₁] at h₂
-  case inr =>
-    have h₂ := Values.lt_irrefl tl
-    simp [h₁] at h₂
+  cases vs <;>
+  simp only [Values.lt, decide_True, Bool.false_eq_true, not_false_eq_true,
+    Bool.true_and, Bool.or_eq_true, not_or, Bool.not_eq_true]
+  rename_i hd tl
+  simp only [Value.lt_irrefl hd, Values.lt_irrefl tl, and_self]
 
 theorem ValueAttrs.lt_irrefl (vs : List (Attr × Value)) :
   ¬ ValueAttrs.lt vs vs
 := by
-  cases vs ; simp [ValueAttrs.lt] ; rename_i hd tl
-  cases hd ; rename_i a v ; simp [ValueAttrs.lt]
-  by_contra h₁
-  rcases h₁ with h₁ | h₁
-  case inl =>
-    rcases h₁ with h₁ | h₁
-    case inl =>
-      have h₂ := StrictLT.irreflexive a
-      contradiction
-    case inr =>
-      have h₂ := Value.lt_irrefl v
-      contradiction
-  case inr =>
-    have h₂ := ValueAttrs.lt_irrefl tl
-    contradiction
+  cases vs <;>
+  simp only [ValueAttrs.lt, Bool.false_eq_true, not_false_eq_true, Bool.not_eq_true]
+  rename_i hd tl
+  cases hd ; rename_i a v ;
+  simp only [ValueAttrs.lt, StrictLT.irreflexive a,
+    Value.lt_irrefl v, ValueAttrs.lt_irrefl tl,
+    decide_False, decide_True, Bool.and_false,
+    Bool.or_self, Bool.and_self]
 
 end
 
@@ -359,13 +366,11 @@ theorem Values.lt_asym {vs₁ vs₂: List Value} :
   cases vs₁ <;> cases vs₂ <;> simp [Values.lt]
   rename_i hd₁ tl₁ hd₂ tl₂
   intro h₁ ; rcases h₁ with h₁ | h₁
-  case inl =>
-    have h₂ := Value.lt_asymm h₁
+  · have h₂ := Value.lt_asymm h₁
     simp [LT.lt] at h₂
     simp [h₂] ; intro h₃ ; subst h₃
     simp [h₁] at h₂
-  case inr =>
-    have ⟨hl₁, h₂⟩ := h₁
+  · have ⟨hl₁, h₂⟩ := h₁
     subst hl₁ ; simp only [true_and]
     have h₂ := Values.lt_asym h₂
     simp [h₂, Value.lt_irrefl hd₁]
@@ -434,17 +439,13 @@ theorem Values.lt_trans {vs₁ vs₂ vs₃: List Value}
   cases vs₁ <;> cases vs₂ <;> cases vs₃ <;> simp [Values.lt] at *
   rename_i hd₁ tl₁ hd₂ tl₂ hd₃ tl₃
   rcases h₁ with h₁ | h₁ <;> rcases h₂ with h₂ | h₂
-  case inl.inl =>
-    have h₃ := Value.lt_trans h₁ h₂
+  · have h₃ := Value.lt_trans h₁ h₂
     simp [LT.lt] at h₃ ; simp [h₃]
-  case inl.inr =>
-    have ⟨h₂, _⟩ := h₂
+  · have ⟨h₂, _⟩ := h₂
     subst h₂ ; simp [h₁]
-  case inr.inl =>
-    have ⟨h₁, _⟩ := h₁
+  · have ⟨h₁, _⟩ := h₁
     subst h₁ ; simp [h₂]
-  case inr.inr =>
-    have ⟨hl₁, h₃⟩ := h₁ ; subst hl₁
+  · have ⟨hl₁, h₃⟩ := h₁ ; subst hl₁
     have ⟨hl₂, h₄⟩ := h₂ ; subst hl₂
     have h₃ := Values.lt_trans h₃ h₄
     simp [h₃]
@@ -461,17 +462,12 @@ theorem ValueAttrs.lt_trans {vs₁ vs₂ vs₃: List (Attr × Value)}
   rcases h₁ with h₁ | h₁ <;> rcases h₂ with h₂ | h₂
   case inl.inl =>
     rcases h₁ with h₁ | h₁ <;> rcases h₂ with h₂ | h₂
-    case inl.inl =>
-      have h₃ := String.strictLT.transitive a₁ a₂ a₃ h₁ h₂
-      simp [h₃]
-    case inl.inr =>
-      have ⟨h₂, _⟩ := h₂ ; subst h₂ ; simp [h₁]
-    case inr.inl =>
-      have ⟨h₁, _⟩ := h₁ ; subst h₁ ; simp [h₂]
-    case inr.inr =>
-      have ⟨hl₁, h₃⟩ := h₁ ; subst hl₁
-      have ⟨hl₂, h₄⟩ := h₂ ; subst hl₂
-      have h₃ := Value.lt_trans h₃ h₄
+    · simp [String.strictLT.transitive a₁ a₂ a₃ h₁ h₂]
+    · replace ⟨h₂, _⟩ := h₂ ; subst h₂ ; simp [h₁]
+    · replace ⟨h₁, _⟩ := h₁ ; subst h₁ ; simp [h₂]
+    · replace ⟨h₁', h₁⟩ := h₁ ; subst h₁'
+      replace ⟨h₂', h₂⟩ := h₂ ; subst h₂'
+      have h₃ := Value.lt_trans h₁ h₂
       simp [LT.lt] at h₃ ; simp [h₃]
   case inl.inr =>
     have ⟨⟨hl₂, hr₂⟩, _⟩ := h₂

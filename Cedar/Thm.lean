@@ -1,5 +1,5 @@
 /-
- Copyright 2022-2023 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ Copyright Cedar Contributors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,5 +15,6 @@
 -/
 
 import Cedar.Thm.Authorization
+import Cedar.Thm.Partial
 import Cedar.Thm.Slicing
 import Cedar.Thm.Typechecking

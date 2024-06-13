@@ -1,5 +1,5 @@
 /-
- Copyright 2022-2023 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ Copyright Cedar Contributors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 -/
 
 import Cedar.Thm.Validation.Typechecker.Basic
+import Batteries.Tactic.Case
 
 /-!
 This file proves that typechecking of `.lit` and `.var` expressions is sound.
@@ -39,9 +40,8 @@ theorem type_of_lit_is_sound {l : Prim} {c₁ c₂ : Capabilities} {env : Enviro
   all_goals {
     have ⟨h₃, h₄⟩ := h₃
     rw [←h₃, ←h₄]
-    constructor
-    case left => exact empty_guarded_capabilities_invariant
-    case right => first |
+    apply And.intro empty_guarded_capabilities_invariant
+    first |
       exact true_is_instance_of_tt |
       exact false_is_instance_of_ff |
       apply InstanceOfType.instance_of_int |

@@ -1,5 +1,5 @@
 /-
- Copyright 2022-2023 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ Copyright Cedar Contributors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  limitations under the License.
 -/
 
-import Std
 import Cedar.Data.LT
 
 /-!
@@ -55,6 +54,8 @@ def sub? (i₁ i₂ : Int64) : Option Int64 := mk? (i₁.1 - i₂.1)
 def mul? (i₁ i₂ : Int64) : Option Int64 := mk? (i₁.1 * i₂.1)
 
 def neg? (i₁ : Int64) : Option Int64 := mk? (- i₁.1)
+
+def natAbs (i₁ : Int64) : Nat := i₁.1.natAbs
 
 ----- Derivations -----
 instance : LT Int64 where

@@ -1,5 +1,5 @@
 /-
- Copyright 2022-2023 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ Copyright Cedar Contributors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,7 +15,9 @@
 -/
 
 import Init.Classical
-import Std
+import Batteries.Tactic.Init
+import Batteries.Data.String
+import Batteries.Data.UInt
 
 /-!
 This file contains utilities for working with strict and decidable LT relations.
@@ -168,12 +170,10 @@ theorem List.lt_conn [LT α] [StrictLT α] {xs ys : List α} :
         have h₆ := StrictLT.if_not_lt_gt_then_eq xhd yhd h₄ h₅
         subst h₆
         simp at h₁
-        cases (List.lt_conn h₁)
-        case inl _ _ h₆ =>
-          have h₇ := List.cons_lt_cons xhd xtl ytl h₆
+        cases (List.lt_conn h₁) <;> rename_i h₆
+        · have h₇ := List.cons_lt_cons xhd xtl ytl h₆
           contradiction
-        case inr _ _ h₆ =>
-          have h₇ := List.cons_lt_cons xhd ytl xtl h₆
+        · have h₇ := List.cons_lt_cons xhd ytl xtl h₆
           contradiction
 
 instance List.strictLT (α) [LT α] [StrictLT α] : StrictLT (List α) where
@@ -215,10 +215,7 @@ instance Int.strictLT : StrictLT Int where
   connected  a b   := by omega
 
 theorem UInt32.lt_iff {x y : UInt32} : x < y ↔ x.1.1 < y.1.1 := by
-  cases x; cases y; simp [LT.lt]
-
-theorem UInt32.ext_iff {x y : UInt32} : x = y ↔ x.1.1 = y.1.1 :=
-  ⟨by simp_all, UInt32.ext⟩
+  cases x; cases y; simp only [LT.lt]
 
 instance UInt32.strictLT : StrictLT UInt32 where
   asymmetric a b   := by apply Nat.strictLT.asymmetric

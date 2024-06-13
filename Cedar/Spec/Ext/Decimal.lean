@@ -1,5 +1,5 @@
 /-
- Copyright 2022-2023 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ Copyright Cedar Contributors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -57,6 +57,20 @@ def parse (str : String) : Option Decimal :=
       | _, _ => .none
     else .none
   | _ => .none
+
+instance : ToString Decimal where
+  toString (d : Decimal) : String :=
+    let neg   := if d < (0 : Int) then "-" else ""
+    let d     := d.natAbs
+    let left  := d / (Nat.pow 10 DECIMAL_DIGITS)
+    let right := d % (Nat.pow 10 DECIMAL_DIGITS)
+    let right :=
+      -- this is not generalized for arbitrary DECIMAL_DIGITS
+      if right < 10 then s!".000{right}"
+      else if right < 100 then s!".00{right}"
+      else if right < 1000 then s!".0{right}"
+      else s!".{right}"
+    s!"{neg}{left}{right}"
 
 abbrev decimal := parse
 

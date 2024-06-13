@@ -1,5 +1,5 @@
 /-
- Copyright 2022-2023 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ Copyright Cedar Contributors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,8 +15,7 @@
 -/
 
 import Cedar.Data.LT
-import Std.Data.List.Basic
-import Std.Data.List.Lemmas
+import Batteries.Data.List
 
 /-!
 This file contains utilities for working with lists that are canonical or
@@ -51,14 +50,19 @@ def canonicalize [LT β] [DecidableLT β] (f : α → β) : List α → List α
   | [] => []
   | hd :: tl => insertCanonical f hd (canonicalize f tl)
 
-
 theorem sizeOf_snd_lt_sizeOf_list {α : Type u} {β : Type v} [SizeOf α] [SizeOf β] {x : α × β} {xs : List (α × β)} :
   x ∈ xs → sizeOf x.snd < 1 + sizeOf xs
 := by
   intro h
-  have := List.sizeOf_lt_of_mem h
-  have : sizeOf x = 1 + sizeOf x.1 + sizeOf x.2 := rfl
-  omega
+  rw [Nat.add_comm]
+  apply Nat.lt_add_right
+  apply @Nat.lt_trans (sizeOf x.snd) (sizeOf x) (sizeOf xs)
+  · simp only [sizeOf, Prod._sizeOf_1]
+    rw [Nat.add_comm]
+    apply Nat.lt_add_of_pos_right
+    apply Nat.add_pos_left
+    exact Nat.one_pos
+  · exact List.sizeOf_lt_of_mem h
 
 def attach₂ {α : Type u} {β : Type v} [SizeOf α] [SizeOf β] (xs : List (α × β)) :
 List { x : α × β // sizeOf x.snd < 1 + sizeOf xs } :=
@@ -73,6 +77,9 @@ List { x : α × β // sizeOf x.snd < 1 + (1 + sizeOf xs) } :=
     rw [Nat.add_comm]
     apply Nat.lt_add_right
     apply List.sizeOf_snd_lt_sizeOf_list h)
+
+def map₁ {α : Type w} {β : Type u} (xs : List α) (f : {x : α // x ∈ xs} → β) : List β :=
+  xs.attach.map f
 
 def mapM₁ {m : Type u → Type v} [Monad m] {α : Type w} {β : Type u}
   (xs : List α) (f : {x : α // x ∈ xs} → m β) : m (List β) :=

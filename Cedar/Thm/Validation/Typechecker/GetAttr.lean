@@ -1,5 +1,5 @@
 /-
- Copyright 2022-2023 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ Copyright Cedar Contributors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -50,12 +50,10 @@ theorem type_of_getAttr_inversion {x₁ : Expr} {a : Attr} {c₁ c₂ : Capabili
     have ⟨ty₁, c₁'⟩ := res
     simp [typeOfGetAttr] at h₁
     split at h₁ <;> try contradiction
-    case h_1 =>
-      simp only [List.empty_eq, Except.ok.injEq, Prod.mk.injEq, false_and, exists_const,
+    · simp only [List.empty_eq, Except.ok.injEq, Prod.mk.injEq, false_and, exists_const,
         CedarType.record.injEq, exists_and_right, exists_eq', true_and, false_or, and_true]
       apply getAttrInRecord_has_empty_capabilities h₁
-    case h_2 =>
-      simp only [List.empty_eq, Except.ok.injEq, Prod.mk.injEq, CedarType.entity.injEq,
+    · simp only [List.empty_eq, Except.ok.injEq, Prod.mk.injEq, CedarType.entity.injEq,
         exists_and_right, exists_eq', true_and, false_and, exists_const, or_false, and_true]
       split at h₁ <;> try simp [err] at h₁
       apply getAttrInRecord_has_empty_capabilities h₁
@@ -129,7 +127,7 @@ theorem type_of_getAttr_is_sound_for_entities {x₁ : Expr} {a : Attr} {c₁ c�
     cases h₉ : Map.find? d.attrs a
     case none =>
       simp only [Except.error.injEq, or_self, false_and, exists_const]
-      simp only [typeOf._eq_9, h₄, typeOfGetAttr, getAttrInRecord, List.empty_eq, Except.bind_ok] at h₃
+      simp only [typeOf, h₄, typeOfGetAttr, getAttrInRecord, List.empty_eq, Except.bind_ok] at h₃
       split at h₃ <;> simp [ok, err] at h₃
       split at h₃ <;> try simp at h₃
       case h_1.h_1 _ _ h₁₀ _ _ h₁₁ =>
@@ -167,21 +165,15 @@ theorem type_of_getAttr_is_sound {x₁ : Expr} {a : Attr} {c₁ c₂ : Capabilit
 := by
   have ⟨h₅, c₁', h₄⟩ := type_of_getAttr_inversion h₃
   subst h₅
-  apply And.intro
-  case left => exact empty_guarded_capabilities_invariant
-  case right =>
-    rcases h₄ with ⟨ety, h₄⟩ | ⟨rty, h₄⟩ <;>
-    have ⟨_, v₁, h₆, h₇⟩ := ih h₁ h₂ h₄ <;>
-    simp [EvaluatesTo] at h₆ <;>
-    simp [EvaluatesTo, evaluate] <;>
-    rcases h₆ with h₆ | h₆ | h₆ | h₆ <;> simp [h₆]
-    case inl.intro.inr.inr.inr =>
-      exact type_of_getAttr_is_sound_for_entities h₁ h₂ h₃ h₄ h₆ h₇
-    case inr.intro.inr.inr.inr =>
-      exact type_of_getAttr_is_sound_for_records h₁ h₃ h₄ h₆ h₇
-    all_goals {
-      exact type_is_inhabited ty
-    }
+  apply And.intro empty_guarded_capabilities_invariant
+  rcases h₄ with ⟨ety, h₄⟩ | ⟨rty, h₄⟩ <;>
+  have ⟨_, v₁, h₆, h₇⟩ := ih h₁ h₂ h₄ <;>
+  simp [EvaluatesTo] at h₆ <;>
+  simp [EvaluatesTo, evaluate] <;>
+  rcases h₆ with h₆ | h₆ | h₆ | h₆ <;> simp [h₆]
+  <;> try exact type_is_inhabited ty
+  · exact type_of_getAttr_is_sound_for_entities h₁ h₂ h₃ h₄ h₆ h₇
+  · exact type_of_getAttr_is_sound_for_records h₁ h₃ h₄ h₆ h₇
 
 
 end Cedar.Thm

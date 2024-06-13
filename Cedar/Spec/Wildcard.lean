@@ -1,5 +1,5 @@
 /-
- Copyright 2022-2023 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ Copyright Cedar Contributors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,11 +14,11 @@
  limitations under the License.
 -/
 
-import Std
+import Batteries.Data.HashMap
 
 namespace Cedar.Spec
 
-open Std
+open Batteries
 
 inductive PatElem where
   | star
@@ -70,7 +70,7 @@ def wildcardMatchIdx (text : List Char) (pattern : Pattern) (i j : Nat)
          (← wildcardMatchIdx text pattern (i + 1) (j + 1) (by omega) (by omega))
   modifyGet λ cache => (r, cache.insert (i, j) r)
 termination_by
-  wildcardMatchIdx text pattern i j _ _=> (text.length - i) + (pattern.length - j)
+  (text.length - i) + (pattern.length - j)
 decreasing_by
   all_goals { simp_wf ; omega }
 

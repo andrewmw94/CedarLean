@@ -1,5 +1,5 @@
 /-
- Copyright 2022-2023 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ Copyright Cedar Contributors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -17,18 +17,21 @@
 import Lake
 open Lake DSL
 
-require std from git
-  "https://github.com/leanprover/std4"@"main"
+meta if get_config? env = some "dev" then -- dev is so not everyone has to build it
+require «doc-gen4» from git "https://github.com/leanprover/doc-gen4" @ "main"
+
+require batteries from git
+  "https://github.com/leanprover-community/batteries" @ "main"
 
 package Cedar
 
+@[default_target]
 lean_lib Cedar where
   defaultFacets := #[LeanLib.staticFacet]
 
 lean_lib DiffTest where
   defaultFacets := #[LeanLib.staticFacet]
 
-@[default_target]
 lean_lib UnitTest where
   defaultFacets := #[LeanLib.staticFacet]
 

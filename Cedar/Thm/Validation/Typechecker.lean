@@ -1,5 +1,5 @@
 /-
- Copyright 2022-2023 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ Copyright Cedar Contributors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -97,5 +97,4 @@ theorem type_of_is_sound {e : Expr} {c₁ c₂ : Capabilities} {env : Environmen
       intro xᵢ _
       exact @type_of_is_sound xᵢ
     exact type_of_call_is_sound h₁ h₂ h₃ ih
-termination_by
-  type_of_is_sound e c₁ c₂ env ty request entities _ _ _ => sizeOf e
+termination_by sizeOf e

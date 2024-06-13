@@ -1,5 +1,5 @@
 /-
- Copyright 2022-2023 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ Copyright Cedar Contributors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,6 +22,15 @@ import UnitTest.Run
 namespace UnitTest.Decimal
 
 open Cedar.Spec.Ext.Decimal
+
+theorem test1 : toString ((parse "3.14").get!) = "3.1400" := by decide
+theorem test2 : toString ((parse "11.0003").get!) = "11.0003" := by decide
+theorem test3 : toString ((parse "11.003").get!) = "11.0030" := by decide
+theorem test4 : toString ((parse "11.3000").get!) = "11.3000" := by decide
+theorem test5 : toString ((parse "123.0").get!) = "123.0000" := by decide
+theorem test6 : toString ((parse "-123.0").get!) = "-123.0000" := by decide
+theorem test7 : toString ((parse "-3.14").get!) = "-3.1400" := by decide
+theorem test8 : toString ((parse "-11.0003").get!) = "-11.0003" := by decide
 
 private def testValid (str : String) (rep : Int) : TestCase IO :=
   test str ⟨λ _ => checkEq (parse str) (decimal? rep)⟩
